@@ -1,50 +1,142 @@
-# Bot WhatsApp Modular
+# WhatsApp Bot 🤖
 
-Bot WhatsApp ini menggunakan [Zaileys](https://github.com/zeative/zaileys) dan dirancang dengan arsitektur modular, sehingga Anda dapat dengan mudah menambah atau menghapus perintah.
+Bot WhatsApp multifungsi berbasis Node.js + TypeScript dengan integrasi **Baileys**.  
+Fokus utama: cepat, modular, dan bisa dipakai di grup atau chat pribadi.
 
-## Fitur
+---
 
-- **Struktur Modular**: Setiap perintah berada di filenya sendiri dalam direktori `src/commands`.
-- **Command Loader Dinamis**: Bot secara otomatis memuat semua perintah yang ada di direktori `src/commands` saat dijalankan.
-- **Konfigurasi Terpusat**: Pengaturan utama bot (seperti nomor telepon dan metode autentikasi) berada di `src/core/client.ts`.
-- **Tipe Perintah**: Struktur perintah yang konsisten dijamin oleh interface `Command` di `src/types.ts`.
-- **Fitur Bawaan Zaileys**: Dilengkapi dengan fitur anti-spam, auto-online, auto-read, dan auto-reject-call.
+## 🚀 Fitur Utama
 
-## Cara Menambah Perintah Baru
+### 🖼️ Media Tools
+- **Convert Image to Sticker** – kirim gambar → otomatis jadi stiker.
+- **Sticker to Image** – ubah stiker jadi file gambar.
+- **Web Screenshot** – kirim URL → bot kirim screenshot halaman.
+- **QR Generator** – kirim teks/link → jadi QR code.
+- **Media Compressor** – kompres foto atau video (tanpa kehilangan kualitas parah).
 
-Untuk menambahkan perintah baru, ikuti langkah-langkah berikut:
+---
 
-1.  **Buat File Baru**: Buat file baru di dalam direktori `src/commands`. Nama filenya bisa apa saja, misalnya `mycommand.ts`.
+### 🎥 Downloader
+- **YouTube Downloader (audio/video)**  
+  Format otomatis sesuai durasi & ukuran.
+- **Instagram Reels Downloader**  
+  Cukup kirim link Reels.
+- **TikTok Downloader (no watermark)**  
+  Auto detect link TikTok dari chat.
+- **Twitter/X Downloader**  
+  Kirim link → dapet video/gambar dari post.
 
-2.  **Isi File Perintah**: Salin dan tempel struktur di bawah ini ke dalam file baru Anda dan sesuaikan.
+---
 
-    ```typescript
-    import { Command } from "../types";
-    import { wa } from "../core/client";
+### 📜 Utility
+- **Text to Image** – ubah teks jadi gambar aesthetic.
+- **Text Tools**  
+  - upper/lowercase converter  
+  - reverse text  
+  - random case  
+  - text emoji generator
+- **Weather / Cuaca** – cek cuaca kota tertentu.
+- **Shortlink** – convert link panjang jadi pendek.
+- **Time / Date Info** – waktu & tanggal realtime.
 
-    const command: Command = {
-      // Nama perintah yang akan dipanggil (contoh: !mycommand)
-      name: "mycommand",
-      
-      // Deskripsi singkat tentang apa yang dilakukan perintah ini
-      description: "Deskripsi perintah Anda.",
+---
 
-      // Fungsi yang akan dieksekusi ketika perintah dipanggil
-      execute: (ctx, args) => {
-        // Tulis logika perintah Anda di sini
-        wa.reply("Perintah baru berhasil dijalankan!");
-      },
-    };
+### 😂 Fun & Random
+- **Meme Generator** – kirim teks atas & bawah ke gambar → jadi meme.
+- **Random Quotes / Pickup Lines** – biar chat gak garing.
+- **Rate Command** – contoh: `!rate <nama>` → bot kasih rating acak (1–100%).
+- **Coin Flip / Dice Roll** – lempar koin atau dadu virtual.
+- **Roast Generator** – kirim nama → bot auto nyindir.
+- **Truth or Dare** – main bareng teman di grup.
 
-    export default command;
-    ```
+---
 
-3.  **Selesai!**: Tidak perlu melakukan apa-apa lagi. Bot akan secara otomatis memuat perintah baru Anda saat dijalankan kembali.
+### 👥 Grup Management
+- **Welcome / Goodbye Message**
+- **Anti Link (optional toggle)**
+- **Tag All** – mention semua member.
+- **Promote / Demote / Kick** – admin tools.
+- **Group Info / Stats**
 
-## Menjalankan Bot
+---
 
-Pastikan Anda sudah menginstal dependensi dengan `pnpm install`. Untuk menjalankan bot, gunakan perintah:
+### ⚙️ Developer & Owner Commands
+- **Eval / Run JS** – eksekusi kode JavaScript langsung dari chat.
+- **Restart Bot**
+- **Broadcast Message**
+- **System Info** – uptime, RAM, CPU usage, dsb.
 
-```bash
-npm start
+---
+
+## 💡 Ide Fitur Tambahan (WIP / Opsional)
+> Buat pengembangan ke depan
+
+| Kategori | Ide Fitur | Deskripsi |
+|-----------|------------|-----------|
+| Utility | File to Link | Upload file ke temporary file host |
+| Utility | Poll / Voting | Bikin polling di grup |
+| Fun | “Would You Rather” | Random pertanyaan lucu |
+| Fun | Reaction GIF | Kirim GIF lucu sesuai keyword |
+| Productivity | Note / Reminder | Simpan catatan pribadi via chat |
+| Productivity | Todo List | Buat daftar tugas harian |
+| Fun | Chat XP Leveling | Member aktif dapet XP & rank |
+| Media | Text to Speech (TTS) | Ubah teks jadi suara |
+| Media | Voice to Text (STT) | Transkrip suara ke teks |
+| Fun | Mini Games | Tebak gambar, angka, tebak kata |
+| Misc | Auto Reply | Set custom trigger → auto balas teks tertentu |
+
+---
+
+## 🧩 Teknologi
+- **[Baileys](https://github.com/adiwajshing/Baileys)** – WhatsApp Web API
+- **TypeScript** – untuk type safety dan maintainability
+- **Node.js** – runtime utama
+- **Sharp** – untuk image processing
+- **Ytdl-core / Tiktok-scraper / Instagram-scraper** – downloader tools
+- **Moment.js / Day.js** – waktu & tanggal
+
+---
+
+## 📦 Struktur Modular
 ```
+
+src/
+├── commands/
+│   ├── sticker.ts
+│   ├── download.ts
+│   ├── fun.ts
+│   ├── group.ts
+│   └── utils.ts
+├── handlers/
+│   ├── message.ts
+│   ├── group.ts
+│   └── events.ts
+├── lib/
+│   ├── baileys.ts
+│   └── helper.ts
+└── index.ts
+
+```
+
+---
+
+## 🪄 Rencana Ke Depan
+- Integrasi fitur AI untuk variasi respon chat (misal auto reply human-like)
+- Sistem plugin agar developer lain bisa nambah fitur tanpa ubah core
+- Dashboard web untuk monitoring & konfigurasi bot
+- Mode multi-device (owner bisa login beberapa akun sekaligus)
+
+---
+
+## 🧠 Insight
+Kalau kamu mau bot-nya tetap “fun tapi useful”, fokus ke:
+1. **Media Tools** — karena 90% user kirim foto/video.
+2. **Downloader** — ini fitur paling sering dipakai.
+3. **Funny Commands** — biar engagement tinggi di grup.
+4. **Utility ringan** — QR, text tools, shortlink.
+5. **Group control** — biar admin grup senang pakai bot.
+
+---
+
+## 📄 Lisensi
+MIT © 2025 lukixv
