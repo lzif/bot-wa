@@ -1,0 +1,10 @@
+{
+	"files": {
+		"includes": ["src/**/*.ts"]
+	},
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded"
+		}
+	}
+}

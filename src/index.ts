@@ -1,9 +1,5 @@
-import { Client, Events, CommandHandler } from "@mengkodingan/ckptw";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import path from "node:path"
+import { Client, CommandHandler, Events } from "@mengkodingan/ckptw"
 
 const bot = new Client({
 	prefix: ".",
@@ -12,15 +8,14 @@ const bot = new Client({
 	printQRInTerminal: false,
 	phoneNumber: "6283892540720",
 	autoMention: true,
-	markOnlineOnConnect: true
-});
+	markOnlineOnConnect: true,
+})
 
 bot.ev.once(Events.ClientReady, (m) => {
-	console.log(`ready at ${m.user.id}`);
-});
+	console.log(`ready at ${m.user.id}`)
+})
 
-const cmd = new CommandHandler(bot, path.join(__dirname, "commands"));
-cmd.load();
+const cmd = new CommandHandler(bot, path.join(__dirname, "commands"))
+cmd.load()
 
-bot.launch();
-
+bot.launch()

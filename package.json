@@ -1,27 +1,30 @@
 {
-  "name": "bot-wa",
+	"name": "bot-wa",
 	"description": "powerful WhatsApp bots",
-  "main": "index.js",
-  "private": true,
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=index.js",
-    "start": "node index.js",
-    "format": "prettier . -w"
-  },
-  "dependencies": {
-    "@mengkodingan/ckptw": "^4.4.10",
-    "groq-sdk": "^0.34.0",
-    "sharp": "^0.34.4",
-    "wa-sticker-formatter": "^4.4.4"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.11",
-    "prettier": "^3.6.2",
-    "tsx": "^4.20.6"
-  },
-  "trustedDependencies": [
-    "esbuild",
-    "protobufjs"
-  ]
+	"main": "index.js",
+	"private": true,
+	"scripts": {
+		"dev": "tsc --watch",
+		"build": "tsc --esModuleInterop --skipLibCheck",
+		"start": "node index.js",
+		"format": "biome check --write"
+	},
+	"dependencies": {
+		"@mengkodingan/ckptw": "^4.4.10",
+		"groq-sdk": "^0.34.0",
+		"sharp": "^0.32.6",
+		"wa-sticker-formatter": "^4.4.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.2",
+		"@types/node": "24.9.2",
+		"@types/node-fetch": "^2.6.13",
+		"esbuild": "^0.25.11",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3"
+	},
+	"trustedDependencies": [
+		"esbuild",
+		"protobufjs"
+	]
 }
