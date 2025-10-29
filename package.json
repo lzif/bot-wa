@@ -1,7 +1,7 @@
 {
   "name": "bot-wa",
-  "module": "index.ts",
-  "type": "module",
+	"description": "powerful WhatsApp bots",
+  "main": "index.js",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",

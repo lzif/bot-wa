@@ -13,7 +13,7 @@ export default {
 				pack: 'Mambo',
 				author: 'El Mambo',
 				type: StickerTypes.FULL,
-				categories: ['🎉'],
+				categories: [],
 				id: '12345',
 				quality: 100,
 			})
@@ -25,7 +25,7 @@ export default {
 				pack: 'Mambo',
 				author: 'El Mambo',
 				type: StickerTypes.FULL,
-				categories: ['🎉'],
+				categories: [],
 				id: '12345',
 				quality: 100,
 			})
