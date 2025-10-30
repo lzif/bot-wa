@@ -1,8 +1,8 @@
-import { type Ctx, italic } from "@mengkodingan/ckptw"
+import type { Ctx } from "@mengkodingan/ckptw"
 
-export default {
+module.exports = {
 	name: "ping",
 	code: async (ctx: Ctx) => {
-		ctx.reply(italic("pong!"))
+		ctx.reply("pong!")
 	},
 }

@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "tsc --watch",
-		"build": "tsc --esModuleInterop --skipLibCheck",
+		"build": "rm -rf app && tsc --esModuleInterop --skipLibCheck",
 		"start": "node app/index.js",
 		"format": "biome check --write"
 	},

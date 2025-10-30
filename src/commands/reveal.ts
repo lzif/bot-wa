@@ -1,6 +1,6 @@
 import { type Ctx, MessageType } from "@mengkodingan/ckptw"
 
-export default {
+module.exports = {
 	name: "reveal",
 	code: async (ctx: Ctx) => {
 		try {

@@ -15,8 +15,7 @@ bot.ev.once(Events.ClientReady, (m) => {
 	console.log(`ready at ${m.user.id}`)
 })
 
-const cmd = new CommandHandler(bot, `${path.resolve()}/commands`)
+const cmd = new CommandHandler(bot, path.resolve() + "/app/commands")
 cmd.load()
 
 bot.launch()
-console.log(`${path.resolve()}/commands/ping.ts`)

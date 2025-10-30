@@ -1,7 +1,7 @@
 import { type Ctx, MessageType } from "@mengkodingan/ckptw"
 import { Sticker, StickerTypes } from "wa-sticker-formatter"
 
-export default {
+module.exports = {
 	name: "sticker",
 	aliases: ["s"],
 	code: async (ctx: Ctx) => {
