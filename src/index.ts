@@ -8,14 +8,14 @@ const bot = new Client({
 	printQRInTerminal: false,
 	phoneNumber: "6283892540720",
 	autoMention: true,
-	markOnlineOnConnect: true,
+	markOnlineOnConnect: false,
 })
 
 bot.ev.once(Events.ClientReady, (m) => {
 	console.log(`ready at ${m.user.id}`)
 })
 
-const cmd = new CommandHandler(bot, path.join(__dirname, "commands"))
+const cmd = new CommandHandler(bot, `${path.resolve("app")}/commands`)
 cmd.load()
 
 bot.launch()
