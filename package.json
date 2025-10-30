@@ -1,12 +1,12 @@
 {
 	"name": "bot-wa",
 	"description": "powerful WhatsApp bots",
-	"main": "lib/index.js",
+	"main": "app/index.js",
 	"private": true,
 	"scripts": {
 		"dev": "tsc --watch",
 		"build": "tsc --esModuleInterop --skipLibCheck",
-		"start": "node index.js",
+		"start": "node app/index.js",
 		"format": "biome check --write"
 	},
 	"dependencies": {
