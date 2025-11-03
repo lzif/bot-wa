@@ -1,17 +1,21 @@
 {
 	"name": "bot-wa",
 	"description": "powerful WhatsApp bots",
-	"main": "app/index.js",
+	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
 		"dev": "tsc --watch",
-		"build": "rm -rf app && tsc --esModuleInterop --skipLibCheck",
-		"start": "node app/index.js",
-		"format": "biome check --write"
+		"build": "rm -rf dist && tsc --esModuleInterop --skipLibCheck",
+		"start": "node dist/index.js",
+		"check": "biome check",
+		"format": "biome check --write --unsafe"
 	},
 	"dependencies": {
 		"@mengkodingan/ckptw": "^4.4.10",
+		"baileysauth": "^1.1.0",
+		"dotenv": "^17.2.3",
 		"groq-sdk": "^0.34.0",
+		"pg": "^8.16.3",
 		"sharp": "^0.32.6",
 		"wa-sticker-formatter": "^4.4.4"
 	},
@@ -20,10 +24,9 @@
 		"@types/node": "24.9.2",
 		"@types/node-fetch": "^2.6.13",
 		"@whiskeysockets/baileys": "7.0.0-rc.6",
-		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"
 	},
-	"packageManager": "pnpm@8.15.1",
+	"packageManager": "pnpm@10.20.0",
 	"trustedDependencies": [
 		"esbuild",
 		"protobufjs"

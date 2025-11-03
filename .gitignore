@@ -1,5 +1,7 @@
 CKPTW_DOCS.md
 
+.env
+
 app/
 node_modules/
 state/

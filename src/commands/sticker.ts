@@ -1,5 +1,6 @@
-import { type Ctx, MessageType } from "@mengkodingan/ckptw"
+import { type Ctx, italic, MessageType } from "@mengkodingan/ckptw"
 import { Sticker, StickerTypes } from "wa-sticker-formatter"
+import type { Command } from "../types"
 
 module.exports = {
 	name: "sticker",
@@ -9,8 +10,12 @@ module.exports = {
 			ctx.getMessageType() === MessageType.imageMessage ||
 			ctx.getMessageType() === MessageType.videoMessage
 		) {
-			const buffer = (await ctx.msg.media.toBuffer()) as Buffer<ArrayBufferLike>
-			if (!buffer) return
+			const buffer = ((await ctx.msg.media.toBuffer()) ||
+				(await ctx.quoted.media.toBuffer())) as Buffer<ArrayBufferLike>
+			if (!buffer) {
+				ctx.reply(italic("❌ Reply ke media atau jadikan sebagai caption."))
+				return
+			}
 			const sticker = new Sticker(buffer, {
 				pack: "Mambo",
 				author: "El Mambo",
@@ -24,4 +29,4 @@ module.exports = {
 			ctx.reply("Please reply to an image or video to create a sticker.")
 		}
 	},
-}
+} as Command
