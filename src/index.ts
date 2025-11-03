@@ -18,7 +18,7 @@ bot.ev.once(Events.ClientReady, (m) => {
 	console.log(`ready at ${m.user.id}`)
 })
 
-const cmd = new CommandHandler(bot, `${path.resolve()}/app/commands`)
+const cmd = new CommandHandler(bot, `${path.resolve()}/dist/commands`)
 cmd.load()
 
 bot.launch()
