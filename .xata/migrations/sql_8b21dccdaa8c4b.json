@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_8b21dccdaa8c4b",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE whatsmeow_version (version int, compat int)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_8b21dccdaa8c4b",
+  "parent": "mig_d413a1kp4msil7aqambg",
+  "schema": "public",
+  "startedAt": "2025-10-31T13:06:49.196056Z"
+}

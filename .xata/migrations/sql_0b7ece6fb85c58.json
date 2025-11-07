@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_0b7ece6fb85c58",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE INDEX IF NOT EXISTS idx_session ON baileys_session USING btree (session)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_0b7ece6fb85c58",
+  "parent": "sql_f10e401c4bad24",
+  "schema": "public",
+  "startedAt": "2025-11-03T02:31:04.97906Z"
+}

@@ -11,4 +11,5 @@ function getEnv(key: string): string {
 export const ENV = {
 	phone: getEnv("PHONE"),
 	dbUrl: getEnv("DB_URL"),
+	geminiApiKey: getEnv("GEMINI_API_KEY")
 }

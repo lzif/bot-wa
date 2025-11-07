@@ -11,10 +11,13 @@
 		"format": "biome check --write --unsafe"
 	},
 	"dependencies": {
+		"@google/genai": "^1.29.0",
 		"@mengkodingan/ckptw": "^4.4.10",
+		"@xata.io/client": "0.0.0-next.v93343b9646f57a1e5c51c35eccf0767c2bb80baa",
 		"baileysauth": "^1.1.0",
 		"dotenv": "^17.2.3",
 		"groq-sdk": "^0.34.0",
+		"mime": "^4.1.0",
 		"pg": "^8.16.3",
 		"sharp": "^0.32.6",
 		"wa-sticker-formatter": "^4.4.4"

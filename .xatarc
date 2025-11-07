@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Luki-Zainur-Ismawan-s-workspace-n5rid4.ap-southeast-2.xata.sh/db/Wa",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}

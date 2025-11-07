@@ -2,6 +2,6 @@ CKPTW_DOCS.md
 
 .env
 
-app/
+dist/
 node_modules/
 state/

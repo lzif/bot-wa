@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_35cc3f74299466",
+    "operations": [
+      {
+        "sql": {
+          "up": "DROP SCHEMA bb_t0l6k1f5i90m5388efknhnaf34_n5rid4 CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_35cc3f74299466",
+  "parent": "sql_e22f2710f767e7",
+  "schema": "public",
+  "startedAt": "2025-11-02T04:10:43.186632Z"
+}

@@ -1,0 +1,77 @@
+Converter
+ * sticker
+ * toaudio
+ * togif
+ * toimage
+ * tovid
+ * tovn
+Downloader
+ * facebookdl
+ * instagramdl
+ * play
+ * spotifydl
+ * tiktokdl
+ * ytmp3
+ * ytmp4
+General / Info
+ * about
+ * help
+ * menu
+ * ping
+ * server
+ * speedtest
+ * tqto
+ * uptime
+Group
+ * hidetag
+ * intro
+ * link
+ * mute
+ * settext (welcome/goodbye)
+ * setwarnlimit
+ * tagall
+ * topsider
+ * topyapping
+ * unmute
+ * unwarning
+ * warning
+Minigames
+ * tebakgambar
+ * ttslontong
+Owner
+ * ban
+ * banlist
+ * checkapis
+ * eval
+ * hidetagowner
+ * join
+ * mode
+ * restart
+ * setbotpp
+ * unban
+Search
+ * spotifysearch
+ * tiktoksearch
+ * ytsearch
+Tools
+ * alkitab
+ * alquran
+ * brat
+ * bratgif
+ * bratvideo
+ * fetch (atau get)
+ * hd
+ * lyric
+ * node
+ * ocr
+ * pinterest
+ * quotly
+ * quoteios
+ * rmbg
+ * screenshot (web)
+ * shorturl
+ * smeme
+ * translate
+ * upload
+ * whatanime
+ * whatmusic

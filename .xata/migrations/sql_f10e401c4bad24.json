@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_f10e401c4bad24",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE IF NOT EXISTS baileys_session (session varchar(40) NOT NULL, identifier varchar(100) NOT NULL, value text DEFAULT NULL, CONSTRAINT idx_unique UNIQUE (session, identifier))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_f10e401c4bad24",
+  "parent": "sql_2a178f7a05900b",
+  "schema": "public",
+  "startedAt": "2025-11-03T02:31:04.69576Z"
+}

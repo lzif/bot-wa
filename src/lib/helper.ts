@@ -1,0 +1,21 @@
+export const message = {
+  admin: "Perintah ini cuma buat admin grup ya.",
+  botAdmin: "Aku belum jadi admin di grup ini. Tolong jadikan aku admin dulu.",
+  gamerestrict: "Perintah game lagi dimatiin di grup ini.",
+  group: "Perintah ini hanya bisa dipakai di dalam grup.",
+  owner: "Ini khusus buat pemilik bot.",
+  premium: "Kamu belum punya akses premium.",
+  private: "Gunakan perintah ini di chat pribadi sama aku.",
+  restrict: "Perintah ini sedang dibatasi.",
+  readmore: "\u200E".repeat(4001),
+  note: "Kadang dalam gelap, kita baru lihat cahaya. Jangan hilang arahnya.",
+  footer: "Akari di sini.",
+  wait: "Tunggu sebentar ya. Aku proses dulu.",
+  notFound: "Aku nggak nemu apa pun. Coba kata lain.",
+  urlInvalid: "Link itu kayaknya nggak valid.",
+  cooldown: "Sabar ya. Coba lagi setelah {timeleft}.",
+  invalidUsage: "Cara pakai salah. Contoh: {prefix}{command} {args}",
+  error: "Ada yang error waktu aku jalankan perintah ini.",
+  maxCharacter: "Teks kamu kepanjangan. Maksimal {max_character} karakter.",
+  banned: "Kamu diblokir dari bot ini. Aku nggak bisa ngobrol sama kamu di sini."
+}
