@@ -26,11 +26,12 @@ bot.ev.once(Events.ClientReady, (m) => {
 })
 
 bot.ev.on(Events.MessagesUpsert, async (m: IMessageInfo, ctx: Ctx) => {
-	ctx.simulateTyping()
 	if (!ctx.getMentioned()) return
 	if (ctx.getMentioned()[0] === "57458257047770@lid") {
+		ctx.simulateTyping()
+		const name = m.pushName || ""
 		const msg = await generateAIMessage(
-			m.content.replace("@57458257047770", ""),
+			`${name}: ${m.content.replace("@57458257047770", "")}`,
 		)
 		await ctx.reply(msg)
 	}
