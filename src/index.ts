@@ -4,7 +4,7 @@ import {
 	CommandHandler,
 	type Ctx,
 	Events,
-	IMessageInfo,
+	type IMessageInfo,
 } from "@mengkodingan/ckptw"
 import useBaileysAuthState from "baileysauth"
 import { ENV } from "./env"
@@ -26,16 +26,18 @@ bot.ev.once(Events.ClientReady, (m) => {
 })
 
 bot.ev.on(Events.MessagesUpsert, async (m: IMessageInfo, ctx: Ctx) => {
-	if (ctx.getMentioned()[0] === "57458257047770@lid" && m.pushName === "Luki") {
+	ctx.simulateTyping()
+	if (!ctx.getMentioned()) return
+	if (ctx.getMentioned()[0] === "57458257047770@lid") {
 		const msg = await generateAIMessage(
-			m.content.replace("@57458257047770", "@Akari Mizuno"),
+			m.content.replace("@57458257047770", ""),
 		)
-		ctx.reply(msg)
+		await ctx.reply(msg)
 	}
 })
 
 bot.use(async (ctx, next) => {
-	console.log(ctx.sender, ctx.getMentioned())
+	console.log(ctx.msg.content)
 	ctx.simulateTyping()
 	await next()
 })
