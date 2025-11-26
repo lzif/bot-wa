@@ -1,8 +1,0 @@
-packages: 
-  - "src/*"
-
-onlyBuiltDependencies:
-  - '@whiskeysockets/baileys'
-  - esbuild
-  - protobufjs
-  - sharp

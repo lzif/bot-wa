@@ -1,3 +1,5 @@
+import "./setup-global"
+import fs from "node:fs"
 import path from "node:path"
 import {
 	Client,
@@ -6,19 +8,15 @@ import {
 	Events,
 	type IMessageInfo,
 } from "@mengkodingan/ckptw"
-import useBaileysAuthState from "baileysauth"
-import { ENV } from "./env"
-import { generateAIMessage } from "./lib/ai"
 
 const bot = new Client({
 	prefix: ".",
 	readIncommingMsg: true,
 	usePairingCode: true,
 	printQRInTerminal: false,
-	phoneNumber: ENV.phone,
+	phoneNumber: config.ENV.phone,
 	autoMention: true,
-	markOnlineOnConnect: false,
-	authAdapter: useBaileysAuthState(ENV.dbUrl),
+	markOnlineOnConnect: true,
 })
 
 bot.ev.once(Events.ClientReady, (m) => {
@@ -30,7 +28,7 @@ bot.ev.on(Events.MessagesUpsert, async (m: IMessageInfo, ctx: Ctx) => {
 	if (ctx.getMentioned()[0] === "57458257047770@lid") {
 		ctx.simulateTyping()
 		const name = m.pushName || ""
-		const msg = await generateAIMessage(
+		const msg = await tools.generateAkariMessage(
 			`${name}: ${m.content.replace("@57458257047770", "")}`,
 		)
 		await ctx.reply(msg)
@@ -38,12 +36,38 @@ bot.ev.on(Events.MessagesUpsert, async (m: IMessageInfo, ctx: Ctx) => {
 })
 
 bot.use(async (ctx, next) => {
-	console.log(ctx.msg.content)
+	console.log(ctx.msg)
 	ctx.simulateTyping()
 	await next()
 })
 
-const cmd = new CommandHandler(bot, `${path.resolve()}/dist/commands`)
+const commandPath = path.resolve("dist/commands")
+const cmd = new CommandHandler(bot, commandPath)
+
 cmd.load()
 
-bot.launch()
+let reloadTimer: NodeJS.Timeout
+
+console.log(`[Monitor] Watching for command updates in: ${commandPath}`)
+
+try {
+	fs.watch(commandPath, { recursive: true }, (_eventType, filename) => {
+		if (filename?.endsWith(".js")) {
+			clearTimeout(reloadTimer)
+
+			reloadTimer = setTimeout(() => {
+				console.log(
+					`[Hot Reload] File updated: ${filename}. Reloading commands...`,
+				)
+
+				cmd.load()
+			}, 500)
+		}
+	})
+} catch (_e) {
+	console.error(
+		'[Monitor] Failed to watch command directory. Is "dist/commands" missing?',
+	)
+}
+
+module.exports = bot

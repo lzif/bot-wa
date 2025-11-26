@@ -1,0 +1,140 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  OWNER
+}
+
+model User {
+  id   String  @id @default(cuid())
+  lid  String  @unique
+  jid  String?
+  name String?
+  role Role    @default(USER)
+
+  xp    Int @default(0)
+  level Int @default(1)
+
+  warnings  Warning[]
+  mutes     Mute[]
+  reminders Reminder[]
+  sessions  GameSession[]
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  groupMembers GroupMember[]
+}
+
+model Group {
+  id        String        @id @default(cuid())
+  jid       String        @unique
+  name      String?
+  settings  GroupSetting?
+  members   GroupMember[]
+  reminders Reminder[]
+  sessions  GameSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  mutes     Mute[]
+}
+
+model GroupMember {
+  id      String @id @default(cuid())
+  groupId String
+  userLid String
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userLid], references: [lid])
+
+  isAdmin  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userLid])
+  @@index([userLid])
+}
+
+model GroupSetting {
+  id      String @id @default(cuid())
+  groupId String @unique
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  antiLink    Boolean @default(false)
+  welcome     String?
+  levelNotify Boolean @default(true)
+  nsfwAllowed Boolean @default(false)
+  slowModeSec Int?
+
+  updatedAt DateTime @updatedAt
+}
+
+model Warning {
+  id        String  @id @default(cuid())
+  userLid   String
+  issuerLid String?
+
+  user      User     @relation(fields: [userLid], references: [lid])
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([userLid])
+}
+
+model Mute {
+  id      String  @id @default(cuid())
+  userLid String
+  groupId String?
+
+  user  User   @relation(fields: [userLid], references: [lid])
+  group Group? @relation(fields: [groupId], references: [id])
+
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userLid, groupId])
+}
+
+model Reminder {
+  id      String  @id @default(cuid())
+  userLid String?
+  groupId String?
+
+  user  User?  @relation(fields: [userLid], references: [lid])
+  group Group? @relation(fields: [groupId], references: [id])
+
+  text      String
+  remindAt  DateTime
+  repeating String?
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([remindAt, done])
+}
+
+model GameSession {
+  id      String  @id @default(cuid())
+  type    String
+  userLid String?
+  groupId String?
+
+  user  User?  @relation(fields: [userLid], references: [lid])
+  group Group? @relation(fields: [groupId], references: [id])
+
+  state     Json
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([expiresAt])
+}
+
+model LidMapping {
+  id        String   @id @default(cuid())
+  lid       String   @unique
+  pn        String?
+  updatedAt DateTime @updatedAt
+}
