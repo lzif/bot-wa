@@ -2,55 +2,55 @@ import fs from "fs";
 import path from "path";
 
 export class PersistentCache<T> {
-  private memory: Map<string, T>;
-  private filePath: string;
+	private memory: Map<string, T> = new Map();
+	private filePath: string;
+	private saveTimer: NodeJS.Timeout | null = null;
 
-  constructor(filename: string = "mapping-cache.json") {
-    this.filePath = path.resolve(process.cwd(), filename);
-    this.memory = new Map<string, T>();
-    
-    this.load();
-  }
+	constructor(filename: string) {
+		this.filePath = path.resolve(process.cwd(), filename);
+		this.loadSync();
+	}
 
-  get(key: string): T | undefined {
-    return this.memory.get(key);
-  }
+	get(key: string): T | undefined {
+		return this.memory.get(key);
+	}
 
-  set(key: string, value: T): void {
-    this.memory.set(key, value);
-    this.save();
-  }
+	set(key: string, value: T): void {
+		this.memory.set(key, value);
+		this.scheduleSave();
+	}
 
-  delete(key: string): void {
-    const existed = this.memory.delete(key);
-    if (existed) this.save();
-  }
+	delete(key: string): void {
+		const existed = this.memory.delete(key);
+		if (existed) this.saveAsync();
+	}
 
-  clear(): void {
-    this.memory.clear();
-    this.save();
-  }
+	clear(): void {
+		this.memory.clear();
+		this.saveAsync();
+	}
 
-  private load() {
-    try {
-      if (fs.existsSync(this.filePath)) {
-        const rawData = fs.readFileSync(this.filePath, "utf-8");
-        const entries = JSON.parse(rawData);
-        this.memory = new Map(entries);
-        console.log(`💾 Cache loaded from disk: ${this.memory.size} items.`);
-      }
-    } catch (e) {
-      console.error("⚠️ Gagal load cache (mungkin file corrupt), memulai dengan cache kosong.");
-      this.memory = new Map();
-    }
-  }
+	private loadSync() {
+		try {
+			if (fs.existsSync(this.filePath)) {
+				this.memory = new Map(JSON.parse(fs.readFileSync(this.filePath, "utf-8")));
+			}
+		} catch (e) {
+			this.memory = new Map();
+		}
+	}
 
-  private save() {
-    try {
-      const entries = Array.from(this.memory.entries());
-      fs.writeFileSync(this.filePath, JSON.stringify(entries, null, 2));
-    } catch (e) {
-      console.error("❌ Gagal menyimpan cache ke disk:", e);
-    }
-  }
+	private scheduleSave() {
+		if (this.saveTimer) clearTimeout(this.saveTimer);
+		this.saveTimer = setTimeout(() => this.saveAsync(), 1000); // Debounce 1s
+	}
+
+	private async saveAsync() {
+		try {
+			const data = JSON.stringify(Array.from(this.memory.entries()), null, 2);
+			await fs.promises.writeFile(this.filePath, data);
+		} catch (e) {
+			console.error("❌ Cache Save Failed:", e);
+		}
+	}
 }

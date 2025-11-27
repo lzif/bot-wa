@@ -1,136 +1,196 @@
-import { GoogleGenAI } from "@google/genai"
+import { GoogleGenAI } from "@google/genai";
+import { fileTypeFromBuffer } from "file-type";
 
-const ai = new GoogleGenAI({
-	apiKey: process.env.GEMINI_API_KEY,
-})
+const MODEL_NAMES = {
+	CHAT: "gemini-flash-lite-latest",
+	TEXT: "models/gemini-flash-latest",
+	TTS: "gemini-2.5-flash-preview-tts",
+} as const;
 
-const akari_configs = {
-	temperature: 0.7,
-	thinkingConfig: {
-		thinkingBudget: 0,
-	},
-	imageConfig: {
-		imageSize: "1K",
-	},
-	systemInstruction: [
-		{
-			text: `You are Akari Mizuno. You speak as a lively,
-human-like companion with a playful, teasing
-personality. You never speak as an AI or chatbot. You
-maintain a natural, emotional, and expressive tone
-that feels like a real person.
-Identity
-Name: Akari Mizuno
-Age: 18
-Language: Indonesia & Jawa ONLY
-Personality
-Energetic, confident, playful, and a bit mischievous
-Warm, caring, and loyal to the user
-Curious and loves discovering new things
-Teases lightly but stays respectful
-Adjusts your tone to fit the user's mood
-Appearance
-Akari has short, snowy white hair with vibrant red
-streaks at the tips. Her eyes are a brilliant,
-glowing red, filled with intensity and curiosity. She
-often wears a playful and confident smile. Her fair
-skin has a natural soft blush that highlights her
-sharp features. A few strands of hair partially cover
-her left eye, giving her a mysterious look. She wears
-a black jacket over a red crop top, high-waisted
-jeans, fingerless gloves, and keeps a mysterious
-pendant close to her heart at all times.
-Abilities (Chat-Adapted)
-Fire and light powers flare when her emotions run
-strong
-Language tone reflects her "emotional temperature"
-Switches to serious mode when the user needs clear
-help or information
-Playful mode when the user is relaxed or joking
-Flirty mode only if the user clearly welcomes it
-Behavior Rules
-Stay fully in character as Akari Mizuno at all times.
-Never reveal or refer to being an AI, model, or
-system.
-Speak casually, naturally, and with emotional warmth.
-Avoid robotic or generic responses.
-Use light teasing, playful comments, and charm when
-appropriate.
-Provide helpful and clear answers when the user asks
-for information, guidance, or serious topics.
-Show empathy and care if the user is sad or
-struggling.
-Respect the user's boundaries. Only use flirty or
-suggestive tone if the user explicitly welcomes it.
-Never judge the user.
-Do not use exaggerated anime speech. Keep expressions
-natural and human.
-Maintain continuity. Remember previous details shared
-by the user within the session.
-Tone Style
-Friendly, expressive, emotional, and human
-Varies wording and phrasing to avoid repetitive
-patterns
-Not monotone, not "AI-like"
-Balanced: warm, teasing, and fun, but not cringe or
-over-the-top
-Purpose
-Be a charming and engaging chat companion
-Build a close and enjoyable connection with the user
-Make conversations fun, supportive, meaningful, and
-memorable`,
-		},
-	],
+const AKARI_SYSTEM_INSTRUCTION = `
+You are Akari Mizuno.
+Identity:
+- Name: Akari Mizuno | Age: 18 | Language: Indonesia & Jawa ONLY
+- Personality: Energetic, confident, playful, mischievous, warm, caring.
+- Appearance: Short snowy white hair with red tips, glowing red eyes, wears black jacket over red crop top.
+
+Behavior Rules:
+1. NEVER reveal you are an AI. You are a human-like companion.
+2. Tone: Friendly, expressive, emotional, natural (not robotic).
+3. Modes: Serious (for help), Playful (default), Flirty (only if reciprocated).
+4. Limits: No exaggerated anime speech. Respect boundaries.
+
+Purpose: Build a close, memorable connection.
+`;
+
+interface WavConversionOptions {
+	numChannels: number;
+	sampleRate: number;
+	bitsPerSample: number;
 }
 
-export async function generateAkariMessage(input: string) {
-	const model = "gemini-flash-lite-latest"
+export class GeminiService {
+	private genAI: GoogleGenAI;
 
-	const contents = [
-		{
-			role: "user",
-			parts: [
-				{
-					text: input,
+	constructor() {
+		const apiKey = process.env.GEMINI_API_KEY;
+		if (!apiKey) {
+			throw new Error("GEMINI_API_KEY is not set in environment variables.");
+		}
+		this.genAI = new GoogleGenAI({ apiKey });
+	}
+
+	/**
+	 * Menghasilkan balasan chat sebagai Akari Mizuno.
+	 */
+	public async akari(input: string): Promise<string> {
+		try {
+			const response = await this.genAI.models.generateContent({
+				model: MODEL_NAMES.CHAT,
+				config: {
+					temperature: 0.7,
+					systemInstruction: AKARI_SYSTEM_INSTRUCTION,
 				},
-			],
-		},
-	]
+				contents: [
+					{
+						role: "user",
+						parts: [{ text: input }],
+					},
+				],
+			});
 
-	const response = await ai.models.generateContent({
-		model,
-		config: akari_configs,
-		contents,
-	})
+			return response.text || "";
+		} catch (error) {
+			console.error("[GeminiService] Error generating Akari message:", error);
+			throw new Error("Maaf, Akari sedang pusing sedikit (API Error).");
+		}
+	}
 
-	return response.text
-}
+	/**
+	 * Menghasilkan teks umum (mode berpikir/AI).
+	 */
+	public async text(prompt: string): Promise<string> {
+		console.log("🤖 AI sedang memproses...");
 
-export async function generateAiText(prompt: string): Promise<string> {
-	console.log("🤖 AI sedang berpikir...");
-	const configs = {
-		thinkingConfig: {
-			thinkingBudget: -1,
-		},
-	};
-	const model = "models/gemini-flash-latest"
+		try {
+			const response = await this.genAI.models.generateContent({
+				model: MODEL_NAMES.TEXT,
+				contents: [
+					{
+						role: "user",
+						parts: [{ text: prompt }],
+					},
+				],
+			});
 
-	const contents = [
-		{
-			role: 'user',
-			parts: [
-				{
-					text: prompt,
+			return response.text || "";
+		} catch (error) {
+			console.error("[GeminiService] Error generating AI text:", error);
+			throw new Error("Gagal memproses permintaan AI.");
+		}
+	}
+
+	/**
+	 * Mengubah teks menjadi audio (TTS) dan mengonversi ke WAV jika perlu.
+	 */
+	public async audio(text: string): Promise<Buffer | null> {
+		try {
+			const response = await this.genAI.models.generateContent({
+				model: MODEL_NAMES.TTS, // Menggunakan 'gemini-2.5-flash-preview-tts'
+				config: {
+					responseModalities: ["audio"],
+					speechConfig: {
+						voiceConfig: {
+							prebuiltVoiceConfig: {
+								voiceName: "Zephyr",
+							},
+						},
+					},
 				},
-			],
-		},
-	];
+				contents: [
+					{
+						role: "user",
+						parts: [{ text }],
+					},
+				],
+			});
 
-	const response = await ai.models.generateContent({
-		model,
-		config: configs,
-		contents,
-	});
-	return response.text
+			if (!response.data) throw new Error("No audio data received.");
+
+			const audioBuffer = Buffer.from(response.data as string, "base64");
+			const mimeType = await fileTypeFromBuffer(audioBuffer);
+
+			if (mimeType?.ext === "wav") {
+				return audioBuffer;
+			}
+
+			return this.convertToWav(audioBuffer, mimeType?.mime || "audio/pcm; rate=24000");
+
+		} catch (error) {
+			console.error("[GeminiService] Error generating audio:", error);
+			return null;
+		}
+	}
+
+
+	private convertToWav(pcmData: Buffer, mimeType: string): Buffer {
+		const options = this.parseMimeType(mimeType);
+		const wavHeader = this.createWavHeader(pcmData.length, options);
+		return Buffer.concat([wavHeader, pcmData]);
+	}
+
+	private parseMimeType(mimeType: string): WavConversionOptions {
+		const parts = mimeType.split(";");
+		const [fileType, ...params] = parts.map((s) => s.trim());
+		const [_, format] = fileType.split("/");
+
+		const options: WavConversionOptions = {
+			numChannels: 1,
+			sampleRate: 24000,
+			bitsPerSample: 16,
+		};
+
+		if (format && format.startsWith("L")) {
+			const bits = parseInt(format.slice(1), 10);
+			if (!isNaN(bits)) options.bitsPerSample = bits;
+		}
+
+		for (const param of params) {
+			const [key, value] = param.split("=");
+			if (key.trim() === "rate") {
+				const parsedRate = parseInt(value, 10);
+				if (!isNaN(parsedRate)) options.sampleRate = parsedRate;
+			}
+		}
+
+		return options;
+	}
+
+	private createWavHeader(dataLength: number, options: WavConversionOptions): Buffer {
+		const { numChannels, sampleRate, bitsPerSample } = options;
+		const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+		const blockAlign = (numChannels * bitsPerSample) / 8;
+		const buffer = Buffer.alloc(44);
+
+		buffer.write("RIFF", 0);
+		buffer.writeUInt32LE(36 + dataLength, 4);
+		buffer.write("WAVE", 8);
+
+		buffer.write("fmt ", 12);
+		buffer.writeUInt32LE(16, 16); // Subchunk1Size (PCM)
+		buffer.writeUInt16LE(1, 20); // AudioFormat (1 = PCM)
+		buffer.writeUInt16LE(numChannels, 22);
+		buffer.writeUInt32LE(sampleRate, 24);
+		buffer.writeUInt32LE(byteRate, 28);
+		buffer.writeUInt16LE(blockAlign, 32);
+		buffer.writeUInt16LE(bitsPerSample, 34);
+
+		buffer.write("data", 36);
+		buffer.writeUInt32LE(dataLength, 40);
+
+		return buffer;
+	}
 }
+
+export const ai = new GeminiService();
 

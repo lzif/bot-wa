@@ -28,7 +28,7 @@ bot.ev.on(Events.MessagesUpsert, async (m: IMessageInfo, ctx: Ctx) => {
 	if (ctx.getMentioned()[0] === "57458257047770@lid") {
 		ctx.simulateTyping()
 		const name = m.pushName || ""
-		const msg = await tools.generateAkariMessage(
+		const msg = await tools.ai.akari(
 			`${name}: ${m.content.replace("@57458257047770", "")}`,
 		)
 		await ctx.reply(msg)
