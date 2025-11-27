@@ -1,6 +1,6 @@
 import type { Command } from "../../types/commands";
 
-const truthOrDare: Command = {
+module.exports = {
   name: "truthordare",
   aliases: ["truth", "dare"],
   category: "Fun",
@@ -29,6 +29,4 @@ const truthOrDare: Command = {
       await ctx.reply("Sorry, I couldn't come up with a question right now. Please try again later.");
     }
   },
-};
-
-export default truthOrDare;
+} as Command
