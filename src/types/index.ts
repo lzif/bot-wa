@@ -25,19 +25,20 @@ export function buildZodSchema(config: SchemaConfig) {
   for (const [key, field] of Object.entries(config)) {
     let validator;
     switch (field.type) {
-      case "string": 
-        validator = z.string().or(z.number().transform(String)); // Terima number, ubah ke string
+      case "string":
+        validator = z.string().or(z.number().transform(String));
         break;
-      case "number": 
-        validator = z.coerce.number(); // "100" -> 100
+      case "number":
+        validator = z.coerce.number();
         break;
-      case "boolean": 
-        validator = z.boolean(); 
+      case "boolean":
+        validator = z.boolean();
         break;
-      case "array": 
-        validator = z.array(z.any()); 
+      case "array":
+        validator = z.array(z.any());
         break;
-      default: validator = z.any();
+      default:
+        validator = z.any();
     }
     shape[key] = field.optional ? validator.nullable().optional() : validator;
   }
