@@ -156,3 +156,26 @@
 - [ ] Web interface untuk konfigurasi grup
 - [ ] Analytics dan statistik penggunaan
 - [ ] Log viewer
+## Additional Feature Ideas (From Legacy README)
+
+| Category | Feature | Description |
+|-----------|------------|-----------|
+| Utility | File to Link | Upload file to temporary file host |
+| Utility | Poll / Voting | Create polls in groups |
+| Fun | “Would You Rather” | Random funny questions |
+| Fun | Reaction GIF | Send funny GIFs based on keywords |
+| Productivity | Note / Reminder | Save personal notes via chat |
+| Productivity | Todo List | Create daily to-do lists |
+| Fun | Chat XP Leveling | Active members get XP & rank |
+| Media | Text to Speech (TTS) | Convert text to speech |
+| Media | Voice to Text (STT) | Transcribe voice to text |
+| Fun | Mini Games | Guess the image, number, word guessing |
+| Misc | Auto Reply | Set custom trigger → auto reply specific text |
+
+## Project Insights (From Legacy README)
+To keep the bot "fun but useful", focus on:
+1. **Media Tools** — because 90% of users send photos/videos.
+2. **Downloader** — this is the most frequently used feature.
+3. **Funny Commands** — to keep engagement high in groups.
+4. **Light Utilities** — QR, text tools, shortlink.
+5. **Group Control** — so group admins enjoy using the bot.
