@@ -1,7 +1,7 @@
 {
 	"name": "bot-wa",
 	"description": "powerful WhatsApp bots",
-	"main": "dist/index.js",
+	"main": "index.js",
 	"private": true,
 	"scripts": {
 		"dev": "node index.js --dev",
@@ -9,7 +9,7 @@
 		"start": "node index.js",
 		"check": "biome check",
 		"format": "biome check --write --unsafe",
-		"postinstall":"prisma generate"
+		"postinstall":"npm run build"
 	},
 	"dependencies": {
 		"@google/genai": "^1.29.0",
