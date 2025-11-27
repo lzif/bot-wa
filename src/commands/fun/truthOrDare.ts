@@ -1,5 +1,4 @@
 import type { Command } from "../../types/commands";
-import { generateAiText } from "../../tools/ai";
 
 const truthOrDare: Command = {
   name: "truthordare",
@@ -20,7 +19,7 @@ const truthOrDare: Command = {
       await ctx.reply(`🤖 Generating a ${choice} question for you...`);
 
       const prompt = `Give me a unique and interesting ${choice} question for a game of truth or dare. Do not add a "Truth:" or "Dare:" prefix.`;
-      const aiResponse = await generateAiText(prompt);
+      const aiResponse = await tools.ai.text(prompt);
 
       const message = `${choice.charAt(0).toUpperCase() + choice.slice(1)}: ${aiResponse}`;
 
