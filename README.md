@@ -1,142 +1,174 @@
-# WhatsApp Bot 🤖
+# WhatsApp Bot Project
 
-Bot WhatsApp multifungsi berbasis Node.js + TypeScript dengan integrasi **Baileys**.  
-Fokus utama: cepat, modular, dan bisa dipakai di grup atau chat pribadi.
+A multifunctional WhatsApp bot built with **Node.js**, **TypeScript**, and **Baileys**. Designed to be fast, modular, and functional for both group chats and private conversations.
 
----
-
-## 🚀 Fitur Utama
+## 🚀 Features
 
 ### 🖼️ Media Tools
-- **Convert Image to Sticker** – kirim gambar → otomatis jadi stiker.
-- **Sticker to Image** – ubah stiker jadi file gambar.
-- **Web Screenshot** – kirim URL → bot kirim screenshot halaman.
-- **QR Generator** – kirim teks/link → jadi QR code.
-- **Media Compressor** – kompres foto atau video (tanpa kehilangan kualitas parah).
-
----
+- **Convert Image to Sticker** – Send image → convert to sticker.
+- **Sticker to Image** – Convert sticker back to image file.
+- **Web Screenshot** – Send URL → bot sends screenshot of the page.
+- **QR Generator** – Send text/link → generate QR code.
+- **Media Compressor** – Compress photo or video (without severe quality loss).
 
 ### 🎥 Downloader
-- **YouTube Downloader (audio/video)**  
-  Format otomatis sesuai durasi & ukuran.
-- **Instagram Reels Downloader**  
-  Cukup kirim link Reels.
-- **TikTok Downloader (no watermark)**  
-  Auto detect link TikTok dari chat.
-- **Twitter/X Downloader**  
-  Kirim link → dapet video/gambar dari post.
-
----
+- **YouTube Downloader (audio/video)** – Auto-format based on duration & size.
+- **Instagram Reels Downloader** – Just send the Reels link.
+- **TikTok Downloader (no watermark)** – Auto-detect TikTok links from chat.
+- **Twitter/X Downloader** – Send link → get video/image from post.
 
 ### 📜 Utility
-- **Text to Image** – ubah teks jadi gambar aesthetic.
-- **Text Tools**  
-  - upper/lowercase converter  
-  - reverse text  
-  - random case  
-  - text emoji generator
-- **Weather / Cuaca** – cek cuaca kota tertentu.
-- **Shortlink** – convert link panjang jadi pendek.
-- **Time / Date Info** – waktu & tanggal realtime.
-
----
+- **Text to Image** – Convert text to aesthetic images.
+- **Text Tools** – Upper/lowercase, reverse, random case, text emoji generator.
+- **Weather** – Check weather for a specific city.
+- **Shortlink** – Convert long links to short ones.
+- **Time / Date Info** – Realtime time & date.
 
 ### 😂 Fun & Random
-- **Meme Generator** – kirim teks atas & bawah ke gambar → jadi meme.
-- **Random Quotes / Pickup Lines** – biar chat gak garing.
-- **Rate Command** – contoh: `!rate <nama>` → bot kasih rating acak (1–100%).
-- **Coin Flip / Dice Roll** – lempar koin atau dadu virtual.
-- **Roast Generator** – kirim nama → bot auto nyindir.
-- **Truth or Dare** – main bareng teman di grup.
+- **Meme Generator** – Send top & bottom text with image → create meme.
+- **Random Quotes / Pickup Lines** – To keep the chat lively.
+- **Rate Command** – Example: `!rate <name>` → bot gives random rating (1–100%).
+- **Coin Flip / Dice Roll** – Virtual coin flip or dice roll.
+- **Roast Generator** – Send name → bot automatically roasts.
+- **Truth or Dare** – Play with friends in groups.
 
----
-
-### 👥 Grup Management
+### 👥 Group Management
 - **Welcome / Goodbye Message**
 - **Anti Link (optional toggle)**
-- **Tag All** – mention semua member.
-- **Promote / Demote / Kick** – admin tools.
+- **Tag All** – Mention all members.
+- **Promote / Demote / Kick** – Admin tools.
 - **Group Info / Stats**
 
----
-
 ### ⚙️ Developer & Owner Commands
-- **Eval / Run JS** – eksekusi kode JavaScript langsung dari chat.
+- **Eval / Run JS** – Execute JavaScript code directly from chat.
 - **Restart Bot**
 - **Broadcast Message**
-- **System Info** – uptime, RAM, CPU usage, dsb.
+- **System Info** – Uptime, RAM, CPU usage, etc.
 
 ---
 
-## 💡 Ide Fitur Tambahan (WIP / Opsional)
-> Buat pengembangan ke depan
+## 🛠️ Architecture & Tech Stack
 
-| Kategori | Ide Fitur | Deskripsi |
-|-----------|------------|-----------|
-| Utility | File to Link | Upload file ke temporary file host |
-| Utility | Poll / Voting | Bikin polling di grup |
-| Fun | “Would You Rather” | Random pertanyaan lucu |
-| Fun | Reaction GIF | Kirim GIF lucu sesuai keyword |
-| Productivity | Note / Reminder | Simpan catatan pribadi via chat |
-| Productivity | Todo List | Buat daftar tugas harian |
-| Fun | Chat XP Leveling | Member aktif dapet XP & rank |
-| Media | Text to Speech (TTS) | Ubah teks jadi suara |
-| Media | Voice to Text (STT) | Transkrip suara ke teks |
-| Fun | Mini Games | Tebak gambar, angka, tebak kata |
-| Misc | Auto Reply | Set custom trigger → auto balas teks tertentu |
+The project follows a modular architecture with clearly defined components:
 
----
+- **Runtime**: Node.js
+- **Language**: TypeScript
+- **WhatsApp API**: [Baileys](https://github.com/adiwajshing/Baileys) via `@whiskeysockets/baileys`
+- **Framework**: `@mengkodingan/ckptw` (custom WhatsApp bot framework)
+- **Database**: Xata (PostgreSQL-based cloud database)
+- **AI Integration**: Google Gemini API for AI responses
+- **Image Processing**: Sharp library
+- **Audio/Video Processing**: FFmpeg
+- **Code Quality**: Biome linter/formatter
 
-## 🧩 Teknologi
-- **[Baileys](https://github.com/adiwajshing/Baileys)** – WhatsApp Web API
-- **TypeScript** – untuk type safety dan maintainability
-- **Node.js** – runtime utama
-- **Sharp** – untuk image processing
-- **Ytdl-core / Tiktok-scraper / Instagram-scraper** – downloader tools
-- **Moment.js / Day.js** – waktu & tanggal
-
----
-
-## 📦 Struktur Modular
+### Project Structure
 ```
-
 src/
-├── commands/
-│   ├── sticker.ts
-│   ├── download.ts
-│   ├── fun.ts
-│   ├── group.ts
-│   └── utils.ts
-├── handlers/
-│   ├── message.ts
-│   ├── group.ts
-│   └── events.ts
-├── lib/
-│   ├── baileys.ts
-│   └── helper.ts
-└── index.ts
-
+├── commands/              # Command handlers organized by category
+│   ├── converter/         # Media conversion commands (sticker, etc.)
+│   ├── tool/              # Utility commands
+│   ├── group/             # Group management commands
+│   ├── info/              # Information commands
+│   └── ...                # Other command categories
+├── handlers/              # Event handlers for messages, groups, etc.
+├── tools/                 # Utility functions and AI integration
+│   ├── ai/                # AI message generation
+│   ├── media/             # Media processing utilities
+│   ├── api/               # API integrations
+│   └── ...                # Other tool categories
+├── types/                 # TypeScript type definitions
+├── config/                # Configuration and environment variables
+├── lib/                   # Core library functions
+├── xata.ts                # Generated Xata database client
+├── globals.d.ts           # Global type declarations
+├── setup-global.ts        # Global variable setup
+└── index.ts               # Main application entry point
 ```
 
 ---
 
-## 🪄 Rencana Ke Depan
-- Integrasi fitur AI untuk variasi respon chat (misal auto reply human-like)
-- Sistem plugin agar developer lain bisa nambah fitur tanpa ubah core
-- Dashboard web untuk monitoring & konfigurasi bot
-- Mode multi-device (owner bisa login beberapa akun sekaligus)
+## 📦 Getting Started
+
+### Prerequisites
+- **Node.js** (version compatible with `package.json`)
+- **PNPM** package manager (recommended) or NPM
+- **Google Gemini API Key** (for AI features)
+- **Xata Database URL** (for session and data storage)
+- **WhatsApp Account** (Phone number for authentication)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    # or
+    npm install
+    ```
+
+### Configuration
+
+1.  Create a `.env` file in the root directory.
+2.  Add the required environment variables:
+    ```env
+    PHONE=628xxxxxxxxxx      # Phone number for the bot
+    DB_URL=https://...       # Xata database URL
+    GEMINI_API_KEY=AIza...   # Google Gemini API key
+    ```
+
+### Usage
+
+1.  **Build the project:**
+    ```bash
+    pnpm run build
+    ```
+
+2.  **Start the application:**
+    ```bash
+    pnpm run start
+    ```
+
+3.  **Development Mode (Hot Reload):**
+    ```bash
+    pnpm run dev
+    ```
+
+### Code Quality Tools
+- **Format code:** `pnpm run format`
+- **Run checks:** `pnpm run check`
 
 ---
 
-## 🧠 Insight
-Kalau kamu mau bot-nya tetap “fun tapi useful”, fokus ke:
-1. **Media Tools** — karena 90% user kirim foto/video.
-2. **Downloader** — ini fitur paling sering dipakai.
-3. **Funny Commands** — biar engagement tinggi di grup.
-4. **Utility ringan** — QR, text tools, shortlink.
-5. **Group control** — biar admin grup senang pakai bot.
+## 📚 Documentation
+
+For developers looking to extend or modify the bot, detailed documentation is available in the `docs/` directory:
+
+-   **[Advice for New Developers](docs/advice.md)** – Best practices and tips.
+-   **[Adding New Commands](docs/commands.md)** – Guide on creating and registering commands.
+-   **[Global Variables](docs/globals.md)** – Understanding `config` and `tools`.
+-   **[Tools & Utilities](docs/tools.md)** – Reference for helper functions (AI, media, etc.).
+-   **[Type Definitions](docs/types.md)** – TypeScript interfaces and types.
 
 ---
 
-## 📄 Lisensi
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+1.  Fork the repository.
+2.  Create a new branch: `git checkout -b feature/your-feature`.
+3.  Commit your changes: `git commit -m 'Add some feature'`.
+4.  Push to the branch: `git push origin feature/your-feature`.
+5.  Submit a pull request.
+
+**Note:** This project uses Biome for linting and formatting. Please ensure your code passes checks before submitting.
+
+---
+
+## 📄 License
+
 MIT © 2025 lukixv
