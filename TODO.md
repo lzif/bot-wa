@@ -3,8 +3,8 @@
 ## Priority 1: Core Functionality
 
 ### Command Handler & Help System
-- [ ] Buat command `.help` untuk menampilkan daftar semua perintah
-- [ ] Buat command `.menu` dengan kategori-kategori perintah
+- [x] Buat command `.help` untuk menampilkan daftar semua perintah (Implemented in `menu.ts`)
+- [x] Buat command `.menu` dengan kategori-kategori perintah
 - [ ] Implementasi sistem command listing otomatis
 - [ ] Tambahkan deskripsi lengkap dan contoh penggunaan untuk setiap command
 
@@ -25,67 +25,69 @@
 
 ## Priority 2: Feature Implementation
 
-### Media Commands
-- [ ] Buat command `.sticker` untuk membuat stiker dari gambar
-- [ ] Buat command `.facebookdl` dan `.fbdl` untuk download video dari Facebook
-- [ ] Buat command `.instagramdl` dan `.igdl` untuk download media dari Instagram
-- [ ] Buat command `.play` untuk cari dan putar lagu dari YouTube
-- [ ] Buat command `.spotifydl` untuk download lagu dari Spotify
-- [ ] Buat command `.tiktokdl` dan `.ttdl` untuk download video TikTok
-- [ ] Buat command `.ytmp3` dan `.ytmp4` untuk konversi YouTube ke MP3/MP4
-- [ ] Buat command `.pinterest` untuk cari dan ambil gambar dari Pinterest
-- [ ] Buat command `.smeme` untuk buat meme dengan teks custom
-- [ ] Buat command `.upload` untuk upload file ke server bot
+### 📦 MEDIA
+- [x] .sticker → Membuat stiker dari gambar
+- [ ] .facebookdl / .fbdl → Download video dari Facebook
+- [ ] .instagramdl / .igdl → Download media dari Instagram
+- [ ] .play → Cari dan putar lagu dari YouTube
+- [ ] .spotifydl → Download lagu dari Spotify
+- [ ] .tiktokdl / .ttdl → Download video TikTok
+- [x] .ytmp3 / .ytmp4 → Konversi YouTube ke MP3/MP4
+- [ ] .pinterest → Cari dan ambil gambar dari Pinterest
+- [ ] .smeme → Buat meme dengan teks custom
+- [ ] .upload → Upload file ke server bot
 
-### Utility Tools
-- [ ] Buat command `.fetch` untuk ambil data dari URL
-- [ ] Buat command `.get` untuk ambil informasi dari link
-- [ ] Buat command `.hd` untuk tingkatkan resolusi gambar
-- [ ] Buat command `.lyric` untuk cari lirik lagu
-- [ ] Buat command `.node` untuk jalankan kode Node.js sederhana
-- [ ] Buat command `.ocr` untuk ekstrak teks dari gambar
-- [ ] Buat command `.rmbg` untuk hapus background dari gambar
-- [ ] Buat command `.screenshot` untuk screenshot halaman web
-- [ ] Buat command `.shorturl` untuk buat link pendek
-- [ ] Buat command `.translate` untuk terjemahkan teks
-- [ ] Buat command `.whatanime` untuk cari judul anime dari screenshot
-- [ ] Buat command `.whatmusic` untuk identifikasi lagu dari audio
+### 🧰 UTILITAS
+- [ ] .fetch → Ambil data dari URL
+- [ ] .get → Ambil informasi dari link
+- [ ] .hd → Tingkatkan resolusi gambar
+- [ ] .lyric → Cari lirik lagu
+- [ ] .node → Jalankan kode Node.js sederhana
+- [ ] .ocr → Ekstrak teks dari gambar
+- [ ] .rmbg → Hapus background dari gambar
+- [ ] .screenshot → Screenshot halaman web
+- [ ] .shorturl → Buat link pendek
+- [ ] .translate → Terjemahkan teks
+- [ ] .whatanime → Cari judul anime dari screenshot
+- [ ] .whatmusic → Identifikasi lagu dari audio
 
-### Admin Commands
-- [ ] Implementasi command `.hidetag` untuk mention semua anggota tanpa terlihat
-- [ ] Implementasi command `.intro` untuk kirim pesan perkenalan bot
-- [ ] Implementasi command `.link` untuk ambil link grup
-- [ ] Implementasi command `.mute` dan `.unmute` untuk nonaktifkan/aktifkan chat grup
-- [ ] Implementasi command `.warning` dan `.unwarning` untuk tambah/hapus peringatan ke user
-- [ ] Implementasi command `.setwarnlimit` untuk atur batas peringatan
-- [ ] Buat command `.settext` untuk ubah teks default bot
-- [ ] Implementasi command `.tagall` untuk mention semua anggota grup
-- [ ] Implementasi command `.topsider` untuk lihat daftar user paling pasif
-- [ ] Implementasi command `.topyapping` untuk lihat daftar user paling banyak chat
+### 🔧 ADMIN
+- [ ] .hidetag → Mention semua anggota tanpa terlihat
+- [ ] .intro → Kirim pesan perkenalan bot
+- [ ] .link → Ambil link grup
+- [ ] .mute / .unmute → Nonaktifkan/aktifkan chat grup
+- [ ] .warning / .unwarning → Tambah/hapus peringatan ke user
+- [ ] .setwarnlimit → Atur batas peringatan
+- [ ] .settext → Ubah teks default bot
+- [x] .tagall → Mention semua anggota grup
+- [ ] .topsider → Lihat daftar user paling pasif
+- [ ] .topyapping → Lihat daftar user paling banyak chat
 
-### Information Commands
-- [ ] Implementasi command `.about` untuk info tentang bot
-- [ ] Implementasi command `.help` untuk daftar bantuan command
-- [ ] Implementasi command `.menu` untuk menu utama bot
-- [ ] Implementasi command `.ping` untuk cek respon bot
-- [ ] Implementasi command `.speedtest` untuk tes kecepatan internet
-- [ ] Implementasi command `.uptime` untuk lihat lama bot aktif
+### ℹ️ INFO
+- [ ] .about → Info tentang bot
+- [ ] .help → Daftar bantuan command (Handled by .menu)
+- [x] .menu → Menu utama bot
+- [x] .ping → Cek respon bot
+- [x] .speedtest → Tes kecepatan internet
+- [x] .uptime → Lihat lama bot aktif
+- [x] .server → Info server (Added from src)
+- [x] .listapi → List API (Added from src)
 
-### Game Commands
-- [ ] Implementasi command `.tebakgambar` untuk game tebak gambar
-- [ ] Implementasi command `.ttslontong` untuk game teka-teki ala lontong
+### 🎮 GAME
+- [ ] .tebakgambar → Game tebak gambar
+- [ ] .ttslontong → Game teka-teki ala lontong
+- [x] .truthOrDare → Truth or Dare game (Added from src)
 
-### AI Commands
-- [ ] Buat command `.ai` untuk tanya AI untuk jawaban umum
-- [ ] Buat command `.rewrite` untuk rewrite teks dengan gaya berbeda
-- [ ] Buat command `.summarize` untuk ringkas teks panjang
-- [ ] Buat command `.idea` untuk generate ide kreatif
+### 🤖 AI
+- [ ] .ai → Tanya AI untuk jawaban umum
+- [ ] .rewrite → Rewrite teks dengan gaya berbeda
+- [ ] .summarize → Ringkas teks panjang
+- [ ] .idea → Generate ide kreatif
 
-### Leveling System
-- [ ] Implementasi sistem XP untuk pesan di grup
-- [ ] Buat command `.rank` untuk lihat rank user
-- [ ] Buat command `.leaderboard` untuk lihat papan skor grup
-- [ ] Buat command `.xpinfo` untuk info XP user
+### 🏆 LEVEL
+- [ ] .rank → Lihat rank user
+- [ ] .leaderboard → Lihat papan skor grup
+- [ ] .xpinfo → Info XP user
 
 ## Priority 3: Advanced Features
 
@@ -128,18 +130,18 @@
 ## Priority 5: Future Enhancements
 
 ### Education Commands (Optional)
-- [ ] Buat command `.quiz` untuk generate kuis interaktif dari materi/dokumen
-- [ ] Buat command `.explain` untuk jelaskan konsep step-by-step (Study Mode)
-- [ ] Buat command `.progress` untuk cek progres belajar (jumlah soal benar/salah)
-- [ ] Buat command `.material` untuk ambil materi dari Google Drive/OneDrive
-- [ ] Buat command `.studygroup` untuk mode belajar bareng (grup diskusi + kuis)
+- [ ] .quiz → Generate kuis interaktif dari materi/dokumen
+- [ ] .explain → Jelaskan konsep step-by-step (Study Mode)
+- [ ] .progress → Cek progres belajar (jumlah soal benar/salah)
+- [ ] .material → Ambil materi dari Google Drive/OneDrive
+- [ ] .studygroup → Mode belajar bareng (grup diskusi + kuis)
 
 ### Productivity Commands (Optional)
-- [ ] Buat command `.meeting` untuk buat jadwal meeting (sinkronisasi Google Calendar)
-- [ ] Buat command `.reminder` untuk kirim pengingat otomatis untuk event/tugas
-- [ ] Buat command `.notes` untuk catat hasil meeting dan simpan ke Drive
-- [ ] Buat command `.assign` untuk assign tugas ke anggota tim
-- [ ] Buat command `.summary` untuk ringkasan progres harian/weekly tim
+- [ ] .meeting → Buat jadwal meeting (sinkronisasi Google Calendar)
+- [ ] .reminder → Kirim pengingat otomatis untuk event/tugas
+- [ ] .notes → Catat hasil meeting dan simpan ke Drive
+- [ ] .assign → Assign tugas ke anggota tim
+- [ ] .summary → Ringkasan progres harian/weekly tim
 
 ### Multi-Character AI
 - [ ] Implementasi pilihan karakter AI lain selain Akari Mizuno
@@ -156,6 +158,7 @@
 - [ ] Web interface untuk konfigurasi grup
 - [ ] Analytics dan statistik penggunaan
 - [ ] Log viewer
+
 ## Additional Feature Ideas (From Legacy README)
 
 | Category | Feature | Description |
