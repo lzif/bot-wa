@@ -1,5 +1,6 @@
 // src/tools/api/index.ts
 import util from "node:util"
+import { Log } from "./logger"
 
 export interface ApiConfig {
 	baseURL: string
@@ -31,7 +32,7 @@ function buildUrl(
 		url.search = query.toString()
 		return url.toString()
 	} catch (err) {
-		console.error("URL build error:", util.format(err))
+		Log.error("API", err)
 		return null
 	}
 }
@@ -78,10 +79,11 @@ export async function request(
 		// Text fallback
 		return res.text()
 	} catch (err) {
-		console.error("Fetch error:", util.format(err))
-		throw err
+		Log.error("API", err)
+		throw new Error("Failed to process API request.")
 	}
 }
+
 function createClient(api: ApiConfig) {
 	return {
 		url: (endpoint: string, params?: Params, keyName?: string) =>

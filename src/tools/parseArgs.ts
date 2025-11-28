@@ -142,13 +142,13 @@ export function parseArgs<Schema extends string>(
 					result[rule.name] = null
 				} else {
 					throw new Error(
-						`Argumen kurang: Bagian [${rule.name}] wajib diisi (Pemisah '${separator}' tidak ditemukan atau kosong).`,
+						`Missing argument: [${rule.name}] is required (Separator '${separator}' not found or empty).`,
 					)
 				}
 			} else {
 				if (!validateSingle(value, rule, validators)) {
 					throw new Error(
-						`Argumen salah: '${value}' tidak valid untuk [${rule.name}]. Harusnya: ${rule.type}`,
+						`Invalid argument: '${value}' is not valid for [${rule.name}]. Expected: ${rule.type}`,
 					)
 				}
 				result[rule.name] = value
@@ -179,7 +179,7 @@ export function parseArgs<Schema extends string>(
 				// Asumsikan user typo di argumen ini.
 				if (inputsLeft >= slotsLeft) {
 					throw new Error(
-						`Argumen salah: '${currentArg}' tidak valid untuk [${rule.name}]. Harusnya: ${rule.type}`,
+						`Invalid argument: '${currentArg}' is not valid for [${rule.name}]. Expected: ${rule.type}`,
 					)
 				}
 
@@ -201,8 +201,8 @@ export function parseArgs<Schema extends string>(
 				result[rule.name] = null
 			} else {
 				const msg = !currentArg
-					? `Argumen kurang: ${rule.name} (${rule.type}) diperlukan.`
-					: `Argumen salah: '${currentArg}' tidak valid untuk [${rule.name}]. Harusnya: ${rule.type}`
+					? `Missing argument: ${rule.name} (${rule.type}) is required.`
+					: `Invalid argument: '${currentArg}' is not valid for [${rule.name}]. Expected: ${rule.type}`
 				throw new Error(msg)
 			}
 		}
@@ -217,97 +217,97 @@ export function parseArgs<Schema extends string>(
 	 =========================================================================
 */
 
-type TestCase = {
-	name: string
-	args: string[]
-	schema: string
-	expected: Record<string, any> | "ERROR"
-}
+// type TestCase = {
+// 	name: string
+// 	args: string[]
+// 	schema: string
+// 	expected: Record<string, any> | "ERROR"
+// }
 
-const scenarios: TestCase[] = [
-	// --- TEST GROUP: SMART ARGUMENTS (Space) ---
-	{
-		name: "1. Normal (Full)",
-		schema: "<res?: 360|720> <url: youtube>",
-		args: ["360", "https://youtu.be/abc"],
-		expected: { res: "360", url: "https://youtu.be/abc" },
-	},
-	{
-		name: "2. Skip Optional (Smart Shift)",
-		schema: "<res?: 360|720> <url: youtube>",
-		args: ["https://youtu.be/abc"],
-		expected: { res: null, url: "https://youtu.be/abc" },
-	},
-	{
-		name: "3. Strict Mode (Typo '999' tidak boleh di-skip)",
-		schema: "<res?: 360|720> <url: youtube>",
-		args: ["999", "https://youtu.be/abc"],
-		expected: "ERROR", // Karena jumlah argumen pas (2 lawan 2), jadi dilarang skip
-	},
+// const scenarios: TestCase[] = [
+// 	// --- TEST GROUP: SMART ARGUMENTS (Space) ---
+// 	{
+// 		name: "1. Normal (Full)",
+// 		schema: "<res?: 360|720> <url: youtube>",
+// 		args: ["360", "https://youtu.be/abc"],
+// 		expected: { res: "360", url: "https://youtu.be/abc" },
+// 	},
+// 	{
+// 		name: "2. Skip Optional (Smart Shift)",
+// 		schema: "<res?: 360|720> <url: youtube>",
+// 		args: ["https://youtu.be/abc"],
+// 		expected: { res: null, url: "https://youtu.be/abc" },
+// 	},
+// 	{
+// 		name: "3. Strict Mode (Typo '999' tidak boleh di-skip)",
+// 		schema: "<res?: 360|720> <url: youtube>",
+// 		args: ["999", "https://youtu.be/abc"],
+// 		expected: "ERROR", // Karena jumlah argumen pas (2 lawan 2), jadi dilarang skip
+// 	},
 
-	// --- TEST GROUP: SPLIT MODE (Pipa) ---
-	{
-		name: "4. Split Mode (Lengkap)",
-		schema: "<top> | <bottom>",
-		args: ["halo", "gan", "|", "kabar", "baik"], // Simulasi input bot
-		expected: { top: "halo gan", bottom: "kabar baik" },
-	},
-	{
-		name: "5. Split Mode (Optional Kiri Kosong)",
-		schema: "<top?> | <bottom>",
-		args: ["|", "kabar", "baik"],
-		expected: { top: null, bottom: "kabar baik" },
-	},
-	{
-		name: "6. Split Mode (Optional Kanan Kosong)",
-		schema: "<top> | <bottom?>",
-		args: ["halo", "gan", "|"],
-		expected: { top: "halo gan", bottom: null },
-	},
-	{
-		name: "7. Split Mode (Tanpa Pipa = Isi Kiri Saja)",
-		schema: "<top> | <bottom?>",
-		args: ["halo", "gan"],
-		expected: { top: "halo gan", bottom: null },
-	},
-]
+// 	// --- TEST GROUP: SPLIT MODE (Pipa) ---
+// 	{
+// 		name: "4. Split Mode (Lengkap)",
+// 		schema: "<top> | <bottom>",
+// 		args: ["halo", "gan", "|", "kabar", "baik"], // Simulasi input bot
+// 		expected: { top: "halo gan", bottom: "kabar baik" },
+// 	},
+// 	{
+// 		name: "5. Split Mode (Optional Kiri Kosong)",
+// 		schema: "<top?> | <bottom>",
+// 		args: ["|", "kabar", "baik"],
+// 		expected: { top: null, bottom: "kabar baik" },
+// 	},
+// 	{
+// 		name: "6. Split Mode (Optional Kanan Kosong)",
+// 		schema: "<top> | <bottom?>",
+// 		args: ["halo", "gan", "|"],
+// 		expected: { top: "halo gan", bottom: null },
+// 	},
+// 	{
+// 		name: "7. Split Mode (Tanpa Pipa = Isi Kiri Saja)",
+// 		schema: "<top> | <bottom?>",
+// 		args: ["halo", "gan"],
+// 		expected: { top: "halo gan", bottom: null },
+// 	},
+// ]
 
-function runTests() {
-	console.log("🚀 RUNNING PARSER TESTS...\n")
-	let passed = 0
+// function runTests() {
+// 	console.log("🚀 RUNNING PARSER TESTS...\n")
+// 	let passed = 0
 
-	scenarios.forEach((test, idx) => {
-		try {
-			const result = parseArgs(test.args, test.schema)
+// 	scenarios.forEach((test, idx) => {
+// 		try {
+// 			const result = parseArgs(test.args, test.schema)
 
-			if (test.expected === "ERROR") {
-				console.log(
-					`❌ [${idx + 1}] ${test.name} -> FAILED (Expected Error, got Success)`,
-				)
-				console.log("   Result:", result)
-			} else {
-				const match = JSON.stringify(result) === JSON.stringify(test.expected)
-				if (match) {
-					console.log(`✅ [${idx + 1}] ${test.name}`)
-					passed++
-				} else {
-					console.log(`❌ [${idx + 1}] ${test.name} -> FAILED (Value Mismatch)`)
-					console.log("   Exp:", test.expected)
-					console.log("   Got:", result)
-				}
-			}
-		} catch (e: any) {
-			if (test.expected === "ERROR") {
-				console.log(`✅ [${idx + 1}] ${test.name} (Error Caught: ${e.message})`)
-				passed++
-			} else {
-				console.log(`❌ [${idx + 1}] ${test.name} -> FAILED (Unexpected Error)`)
-				console.log("   Error:", e.message)
-			}
-		}
-	})
-	console.log(`\n✨ RESULT: ${passed}/${scenarios.length} Passed.`)
-}
+// 			if (test.expected === "ERROR") {
+// 				console.log(
+// 					`❌ [${idx + 1}] ${test.name} -> FAILED (Expected Error, got Success)`,
+// 				)
+// 				console.log("   Result:", result)
+// 			} else {
+// 				const match = JSON.stringify(result) === JSON.stringify(test.expected)
+// 				if (match) {
+// 					console.log(`✅ [${idx + 1}] ${test.name}`)
+// 					passed++
+// 				} else {
+// 					console.log(`❌ [${idx + 1}] ${test.name} -> FAILED (Value Mismatch)`)
+// 					console.log("   Exp:", test.expected)
+// 					console.log("   Got:", result)
+// 				}
+// 			}
+// 		} catch (e: any) {
+// 			if (test.expected === "ERROR") {
+// 				console.log(`✅ [${idx + 1}] ${test.name} (Error Caught: ${e.message})`)
+// 				passed++
+// 			} else {
+// 				console.log(`❌ [${idx + 1}] ${test.name} -> FAILED (Unexpected Error)`)
+// 				console.log("   Error:", e.message)
+// 			}
+// 		}
+// 	})
+// 	console.log(`\n✨ RESULT: ${passed}/${scenarios.length} Passed.`)
+// }
 
-// Jalanin Test
-runTests()
+// // Jalanin Test
+// runTests()

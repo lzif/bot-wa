@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { performance } from "perf_hooks";
 import { ApiCandidate, buildZodSchema, SchemaConfig } from "../types";
 import { PersistentCache } from "./cache";
+import { Log } from "./logger";
 
 // --- TYPES ---
 
@@ -27,20 +28,30 @@ async function fetchCandidate(c: ApiCandidate): Promise<RaceResult> {
   // @ts-ignore: Access dynamic api client
   const client = tools.api[c.name];
   
-  if (!client) throw new Error(`Client '${c.name}' not found in tools.api`);
+  if (!client) {
+      const error = new Error(`Client '${c.name}' not found in tools.api`);
+      Log.error("UnifyService", error);
+      throw error;
+  }
 
   // Timeout wrapper (15s)
-  const response = await Promise.race([
-      client.get(c.endpoint, c.params),
-      new Promise((_, r) => setTimeout(() => r(new Error("Timeout")), 15000))
-  ]);
+  try {
+      const response = await Promise.race([
+          client.get(c.endpoint, c.params),
+          new Promise((_, r) => setTimeout(() => r(new Error("Timeout")), 15000))
+      ]);
 
-  const duration = performance.now() - start;
-  
-  // Basic sanity check
-  if (!response || _.isEmpty(response)) throw new Error("Empty response");
+      const duration = performance.now() - start;
 
-  return { name: c.name, data: response, duration };
+      // Basic sanity check
+      if (!response || _.isEmpty(response)) throw new Error("Empty response");
+
+      return { name: c.name, data: response, duration };
+  } catch (error) {
+       // Allow individual candidate failure, but log it
+       Log.warn("UnifyService", `Candidate ${c.name} failed: ${error}`);
+       throw error;
+  }
 }
 
 function extractAndValidate<T>(
@@ -48,13 +59,18 @@ function extractAndValidate<T>(
   mapping: Record<string, string>, 
   schema: SchemaConfig
 ): T {
-  const result: any = {};
-  for (const key in schema) {
-    const path = mapping[key];
-    result[key] = path ? _.get(data, path, null) : null;
+  try {
+      const result: any = {};
+      for (const key in schema) {
+        const path = mapping[key];
+        result[key] = path ? _.get(data, path, null) : null;
+      }
+      const Validator = buildZodSchema(schema);
+      return Validator.parse(result) as T;
+  } catch (error) {
+      Log.error("UnifyService", error);
+      throw new Error("Failed to validate data against schema.");
   }
-  const Validator = buildZodSchema(schema);
-  return Validator.parse(result) as T;
 }
 
 // --- MAIN FUNCTION: UNIFY ---
@@ -71,28 +87,32 @@ export async function unify<T>(
     const candidate = candidates.find(c => c.name === champion.winnerName);
     if (candidate) {
       try {
-        console.log(`⚡ [Unify] Fast-track via champion: ${champion.winnerName}`);
+        Log.info("UnifyService", `⚡ Fast-track via champion: ${champion.winnerName}`);
         const result = await fetchCandidate(candidate);
         return extractAndValidate<T>(result.data, champion.mapping, schemaConfig);
       } catch (e) {
-        console.warn(`⚠️ [Unify] Champion ${champion.winnerName} failed/changed. Fallback to Race.`);
-        // Jangan return error, biarkan lanjut ke Phase 2 (Race)
+        Log.warn("UnifyService", `⚠️ Champion ${champion.winnerName} failed/changed. Fallback to Race.`);
+        // Don't return error, let it proceed to Phase 2 (Race)
       }
     }
   }
 
   // --- PHASE 2: RACE ALL CANDIDATES ---
-  console.log(`🏎️  [Unify] Racing ${candidates.length} APIs...`);
+  Log.info("UnifyService", `🏎️  Racing ${candidates.length} APIs...`);
   
   const results = await Promise.allSettled(candidates.map(fetchCandidate));
   const validResults = results
     .filter((r): r is PromiseFulfilledResult<RaceResult> => r.status === "fulfilled")
     .map(r => r.value);
 
-  if (validResults.length === 0) throw new Error("💀 [Unify] All APIs failed!");
+  if (validResults.length === 0) {
+      const error = new Error("💀 All APIs failed!");
+      Log.error("UnifyService", error);
+      throw error;
+  }
 
   // --- PHASE 3: AI JUDGE (Pick Best Content) ---
-  console.log("⚖️  [Unify] AI Judging best response...");
+  Log.info("UnifyService", "⚖️  AI Judging best response...");
   
   const promptData = validResults.map(r => ({
     name: r.name,
@@ -126,6 +146,7 @@ export async function unify<T>(
   let newChampion: ChampionData;
 
   try {
+    // @ts-ignore
     const aiResponse = await tools.ai.text(prompt);
     const parsed = JSON.parse(aiResponse.replace(/```json|```/g, "").trim());
     
@@ -136,16 +157,16 @@ export async function unify<T>(
     };
     
     CHAMPION_CACHE.set(schemaHash, newChampion);
-    console.log(`🏆 [Unify] New Champion: ${newChampion.winnerName}`);
+    Log.info("UnifyService", `🏆 New Champion: ${newChampion.winnerName}`);
   } catch (e) {
-    console.error("❌ [Unify] AI Judge Failed, using first valid candidate.");
-    // Fallback darurat jika AI error (misal token habis)
+    Log.error("UnifyService", "❌ AI Judge Failed, using first valid candidate.");
+    // Emergency fallback if AI fails (e.g. token exhausted)
     newChampion = { winnerName: validResults[0].name, mapping: {}, lastUpdated: Date.now() };
   }
 
   // --- PHASE 4: RETURN DATA ---
   const winner = validResults.find(r => r.name === newChampion.winnerName) || validResults[0];
   
-  // Jika mapping kosong (fallback), ini mungkin throw error di Zod (yang diharapkan agar dev tau ada masalah)
+  // If mapping is empty (fallback), this might throw an error in Zod (expected so dev knows there's an issue)
   return extractAndValidate<T>(winner.data, newChampion.mapping, schemaConfig);
 }
