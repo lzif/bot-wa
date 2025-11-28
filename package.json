@@ -9,7 +9,7 @@
 		"start": "node index.js",
 		"check": "biome check",
 		"format": "biome check --write --unsafe",
-		"postinstall":"npm run build"
+		"postinstall": "npm run build"
 	},
 	"dependencies": {
 		"@google/genai": "^1.29.0",

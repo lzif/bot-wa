@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { fileTypeFromBuffer } from "file-type";
+import { Log } from "./logger";
 
 const MODEL_NAMES = {
 	CHAT: "gemini-flash-lite-latest",
@@ -35,13 +36,15 @@ export class GeminiService {
 	constructor() {
 		const apiKey = process.env.GEMINI_API_KEY;
 		if (!apiKey) {
-			throw new Error("GEMINI_API_KEY is not set in environment variables.");
+			const error = new Error("GEMINI_API_KEY is not set in environment variables.");
+			Log.error("GeminiService", error);
+			throw error;
 		}
 		this.genAI = new GoogleGenAI({ apiKey });
 	}
 
 	/**
-	 * Menghasilkan balasan chat sebagai Akari Mizuno.
+	 * Generates a chat response as Akari Mizuno.
 	 */
 	public async akari(input: string): Promise<string> {
 		try {
@@ -61,16 +64,16 @@ export class GeminiService {
 
 			return response.text || "";
 		} catch (error) {
-			console.error("[GeminiService] Error generating Akari message:", error);
-			throw new Error("Maaf, Akari sedang pusing sedikit (API Error).");
+			Log.error("GeminiService", error);
+			throw new Error("Sorry, Akari is feeling a bit dizzy (API Error).");
 		}
 	}
 
 	/**
-	 * Menghasilkan teks umum (mode berpikir/AI).
+	 * Generates general text (thinking/AI mode).
 	 */
 	public async text(prompt: string): Promise<string> {
-		console.log("🤖 AI sedang memproses...");
+		Log.info("GeminiService", "🤖 AI is processing...");
 
 		try {
 			const response = await this.genAI.models.generateContent({
@@ -85,18 +88,18 @@ export class GeminiService {
 
 			return response.text || "";
 		} catch (error) {
-			console.error("[GeminiService] Error generating AI text:", error);
-			throw new Error("Gagal memproses permintaan AI.");
+			Log.error("GeminiService", error);
+			throw new Error("Failed to process AI request.");
 		}
 	}
 
 	/**
-	 * Mengubah teks menjadi audio (TTS) dan mengonversi ke WAV jika perlu.
+	 * Converts text to audio (TTS) and converts to WAV if necessary.
 	 */
 	public async audio(text: string): Promise<Buffer | null> {
 		try {
 			const response = await this.genAI.models.generateContent({
-				model: MODEL_NAMES.TTS, // Menggunakan 'gemini-2.5-flash-preview-tts'
+				model: MODEL_NAMES.TTS, // Using 'gemini-2.5-flash-preview-tts'
 				config: {
 					responseModalities: ["audio"],
 					speechConfig: {
@@ -127,7 +130,7 @@ export class GeminiService {
 			return this.convertToWav(audioBuffer, mimeType?.mime || "audio/pcm; rate=24000");
 
 		} catch (error) {
-			console.error("[GeminiService] Error generating audio:", error);
+			Log.error("GeminiService", error);
 			return null;
 		}
 	}
@@ -193,4 +196,3 @@ export class GeminiService {
 }
 
 export const ai = new GeminiService();
-

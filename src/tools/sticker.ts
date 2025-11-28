@@ -8,6 +8,7 @@ import { fileTypeFromBuffer } from "file-type"
 import ffmpeg from "fluent-ffmpeg"
 import { Image } from "node-webpmux"
 import sharp, { type Color, fit } from "sharp"
+import { Log } from "./logger"
 
 ffmpeg.setFfmpegPath(ffmpegPath)
 interface IStickerConfig {
@@ -45,36 +46,49 @@ class RawMetadata implements IRawMetadata {
 	}
 }
 const videoToGif = async (data: Buffer): Promise<Buffer> => {
-	const filename = `${tmpdir()}/${Math.random().toString(36)}`
-	const [video, gif] = ["video", "gif"].map((ext) => `${filename}.${ext}`)
-	await writeFile(video, data)
-	await new Promise((resolve) => {
-		ffmpeg(video).save(gif).on("end", resolve)
-	})
-	const buffer = await readFile(gif)
-	;[video, gif].forEach((file) => unlinkSync(file))
-	return buffer
+	try {
+		const filename = `${tmpdir()}/${Math.random().toString(36)}`
+		const [video, gif] = ["video", "gif"].map((ext) => `${filename}.${ext}`)
+		await writeFile(video, data)
+		await new Promise((resolve, reject) => {
+			ffmpeg(video)
+				.save(gif)
+				.on("end", resolve)
+				.on("error", reject)
+		})
+		const buffer = await readFile(gif)
+		;[video, gif].forEach((file) => unlinkSync(file))
+		return buffer
+	} catch (error) {
+		Log.error("StickerService", error)
+		throw new Error("Failed to process video sticker.")
+	}
 }
 const convert = async (
 	data: Buffer,
 	mime: string,
 	{ quality = 100, background = defaultBg }: IStickerOptions,
 ): Promise<Buffer> => {
-	const isVideo = mime.startsWith("video")
-	const image = isVideo ? await videoToGif(data) : data
-	const isAnimated = isVideo || mime.includes("gif") || mime.includes("webp")
+	try {
+		const isVideo = mime.startsWith("video")
+		const image = isVideo ? await videoToGif(data) : data
+		const isAnimated = isVideo || mime.includes("gif") || mime.includes("webp")
 
-	const img = sharp(image, { animated: isAnimated }).toFormat("webp")
-	img.resize(512, 512, {
-		fit: fit.contain,
-		background,
-	})
-	return await img
-		.webp({
-			quality,
-			lossless: false,
+		const img = sharp(image, { animated: isAnimated }).toFormat("webp")
+		img.resize(512, 512, {
+			fit: fit.contain,
+			background,
 		})
-		.toBuffer()
+		return await img
+			.webp({
+				quality,
+				lossless: false,
+			})
+			.toBuffer()
+	} catch (error) {
+		Log.error("StickerService", error)
+		throw new Error("Failed to process sticker image.")
+	}
 }
 
 class Exif {
@@ -98,17 +112,22 @@ class Exif {
 	}
 
 	add = async (image: string | Buffer | Image): Promise<Buffer> => {
-		const exif = this.exif || this.build()
-		image =
-			image instanceof Image
-				? image
-				: await (async () => {
-						const img = new Image()
-						await img.load(image)
-						return img
-					})()
-		image.exif = exif
-		return await image.save(null)
+		try {
+			const exif = this.exif || this.build()
+			image =
+				image instanceof Image
+					? image
+					: await (async () => {
+							const img = new Image()
+							await img.load(image)
+							return img
+						})()
+			image.exif = exif
+			return await image.save(null)
+		} catch (error) {
+			Log.error("StickerService", error)
+			throw new Error("Failed to add sticker metadata.")
+		}
 	}
 }
 
@@ -117,38 +136,43 @@ export async function createSticker(
 	author: string = "",
 	pack: string = "",
 ): Promise<Buffer> {
-	const metadata: IStickerOptions = {
-		author: author,
-		pack: pack,
-		id: randomBytes(32).toString("hex"),
-		quality: 100,
-		type: "default",
-		background: defaultBg,
+	try {
+		const metadata: IStickerOptions = {
+			author: author,
+			pack: pack,
+			id: randomBytes(32).toString("hex"),
+			quality: 100,
+			type: "default",
+			background: defaultBg,
+		}
+
+		// ======= Parse Input =======
+		let data: Buffer
+		if (Buffer.isBuffer(input)) {
+			data = input
+		} else if (input.trim().startsWith("<svg")) {
+			data = Buffer.from(input)
+		} else if (existsSync(input)) {
+			data = await readFile(input)
+		} else {
+			// fetch URL
+			const res = await fetch(input)
+			if (!res.ok) throw new Error(`Failed to fetch URL: ${res.status}`)
+			const arrayBuffer = await res.arrayBuffer()
+			data = Buffer.from(arrayBuffer)
+		}
+
+		// ======= Detect MIME =======
+		const mime: string = input.toString().trim().startsWith("<svg")
+			? "image/svg+xml"
+			: ((await fileTypeFromBuffer(data))?.mime ?? "image/svg+xml")
+
+		// ======= Build Sticker =======
+		return new Exif(metadata as IStickerConfig).add(
+			await convert(data, mime, metadata),
+		)
+	} catch (error) {
+		Log.error("StickerService", error)
+		throw new Error("Failed to create sticker.")
 	}
-
-	// ======= Parse Input =======
-	let data: Buffer
-	if (Buffer.isBuffer(input)) {
-		data = input
-	} else if (input.trim().startsWith("<svg")) {
-		data = Buffer.from(input)
-	} else if (existsSync(input)) {
-		data = await readFile(input)
-	} else {
-		// fetch URL
-		const res = await fetch(input)
-		if (!res.ok) throw new Error(`Failed to fetch URL: ${res.status}`)
-		const arrayBuffer = await res.arrayBuffer()
-		data = Buffer.from(arrayBuffer)
-	}
-
-	// ======= Detect MIME =======
-	const mime: string = input.toString().trim().startsWith("<svg")
-		? "image/svg+xml"
-		: ((await fileTypeFromBuffer(data))?.mime ?? "image/svg+xml")
-
-	// ======= Build Sticker =======
-	return new Exif(metadata as IStickerConfig).add(
-		await convert(data, mime, metadata),
-	)
 }
